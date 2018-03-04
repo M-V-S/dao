@@ -1,10 +1,9 @@
 <?php
-  Sql extends PDO{
+  class Sql extends PDO {
     private $conn;
 
     public function __construct(){
       $this->conn = new PDO("mysql:host=localhost;dbname=dbphp7", "bfm", "1234");
-
     }
 
     private function setParams($statment, $paramets = array()){
@@ -20,13 +19,17 @@
     public function query($rowQuery, $params = array()){
       $stmt = $this->conn->prepare($rowQuery);
 
-      $this->setParam($stmt, $params);
+      $this->setParams($stmt, $params);
 
-      return $stmt->execute($stmt, $params);
+      $stmt->execute();
+      return $stmt;
 
     }
-    public function select($rowQuery, $params = array()){
-      $this->query("$rawQuery, $params");
+    public function select($rowQuery, $params = array()):array
+    {
+      $stmt = $this->query($rowQuery, $params);
+
+      return $stmt->fetchALL(PDO::FETCH_ASSOC);
     }
 
   }
